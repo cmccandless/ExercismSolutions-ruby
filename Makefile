@@ -14,6 +14,6 @@ test-all:
 
 define dotest
 	cd $(1); \
-	ruby $(OPTS) *_test.rb; \
+	ruby $(OPTS) *_test.rb || exit 1; \
 	cd ..;
 endef
