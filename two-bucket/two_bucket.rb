@@ -1,7 +1,4 @@
 class TwoBucket
-  def dbg(msg)
-    print(msg)
-  end
   def initialize(size1, size2, goal, goal_bucket)
     @sizes = [size1, size2]
     @goal = goal
@@ -34,7 +31,6 @@ class TwoBucket
     "#{buckets[0]},#{buckets[1]}"
   end
   def moves
-    dbg("sizes=#{@sizes},goal=#{@goal},goal_bucket=#{@goal_bucket}\n")
     invalid = [0, 0]
     invalid[1 - @goal_index] = @sizes[1 - @goal_index]
     invalid_s = buckets_s(invalid)
@@ -46,7 +42,6 @@ class TwoBucket
     until goal?(buckets)
       key = buckets_s(buckets)
       unless visited[key] || key == invalid_s
-        dbg("#{key}(#{count})\n")
         visited[key] = true
         nc = count + 1
         [0, 1].each { |i|
@@ -61,10 +56,9 @@ class TwoBucket
       buckets, count = to_visit.shift
     end
     @other_bucket = buckets[1 - @goal_index]
-    dbg("Solution(#{buckets}): #{count} moves\n")
     count
   end
 end
 module BookKeeping
-  VERSION=3
+  VERSION=4
 end
