@@ -1,0 +1,4 @@
+{
+  "track": "ruby",
+  "init_script": "init.sh"
+}

@@ -1,6 +1,7 @@
 .PHONY: lint test
 lint:
-	@echo "No linter configured"
+	@ls ./*/*.rb | xargs -n1 | grep -v _test | xargs rubocop
+	
 
 test:
 	@ $(foreach FILE,$(FILES), \
