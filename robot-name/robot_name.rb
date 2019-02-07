@@ -1,32 +1,28 @@
 require 'set'
 class Robot
-  @@used = Set.new
-  @@maxName = 26 * 26 * 1000
+  attr_reader :name
+  @max_name = 26 * 26 * 1000
+  @available = (0..@max_name - 1).to_a.shuffle
   def initialize
-    @name = ""
+    @name = ''
     reset
   end
-  attr_reader :name
-  def randDigit
-    rand(10).to_s
+
+  def self.letter_at(index_from_a)
+    (index_from_a + 'A'.ord).chr
   end
-  def randLetter
-    (rand(26) + "A".ord).chr
-  end
-  def reset
-    r = rand(@@maxName)
-    while @@used.include?(r)
-      r = rand(@@maxName)
-    end
-    @@used.add(r)
-    @name = ((r / 26000).floor + "A".ord).chr
-    @name += (((r % 26000) / 1000).floor + "A".ord).chr
-    @name += (r % 1000).to_s.rjust(3,"0")
-  end
+
   def self.forget
-    @@used.clear
+    @available = (0..@max_name - 1).to_a.shuffle
   end
-end
-module BookKeeping
-  VERSION=3
+
+  def self.rand_name
+    a, r = @available.pop.divmod(26_000)
+    b, r = r.divmod(1000)
+    [a, b].map(&method(:letter_at)).join + r.to_s.rjust(3, '0')
+  end
+
+  def reset
+    @name = self.class.rand_name
+  end
 end

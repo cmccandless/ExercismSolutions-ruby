@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 2.2
+  - jruby
+  - truffleruby
+  - 2.0.0-p247
+
+before_script:
+  - make lint
+
+script:
+  - make test-all
