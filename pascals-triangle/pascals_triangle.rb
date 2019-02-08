@@ -7,7 +7,7 @@ class Triangle
     rs = [[1]]
     (2..@rows).each do |_|
       rs.push((0..rs[-1].size - 1).collect { |i|
-                rs[-1][i, 2].sum
+                rs[-1][i, 2].reduce(0, :+)
               }.unshift(1))
     end
     rs

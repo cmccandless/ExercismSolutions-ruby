@@ -17,22 +17,22 @@ class BinarySearch
     [0, middle, list.size]
   end
 
-  def do_search
+  def do_search(data)
     p, r, q = search_start
     while p < r
       return r if list[r] == data
 
       if list[r] < data
-        q = r
-      else
         p = r
+      else
+        q = r
       end
       r = midpoint(p, q)
     end
   end
 
-  def search_for(_data)
-    r = do_search
+  def search_for(data)
+    r = do_search(data)
     raise RuntimeError if r.nil?
 
     r

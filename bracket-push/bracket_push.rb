@@ -1,9 +1,9 @@
 class Brackets
-  def brackets
+  def self.brackets
     { '[' => ']', '{' => '}', '(' => ')' }
   end
 
-  def closers
+  def self.closers
     [']', '}', ')']
   end
 

@@ -1,12 +1,12 @@
 class BeerSong
-  def bottles(verse_num)
+  def self.bottles(verse_num)
     return 'No more bottles' if verse_num.zero?
     return '1 bottle' if verse_num == 1
 
     "#{verse_num} bottles"
   end
 
-  def verse(verse_num)
+  def self.verse(verse_num)
     line2 = if verse_num.zero?
               "Go to the store and buy some more, #{bottles(99)}"
             else
@@ -18,7 +18,7 @@ class BeerSong
      "#{line2} of beer on the wall.\n"
   end
 
-  def verses(start, stop)
-    (0..start - stop).collect { |i| verse(start - i) }.join("\n")
+  def self.recite(start, count)
+    (0..count - 1).collect { |i| verse(start - i) }.join("\n")
   end
 end

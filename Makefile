@@ -7,14 +7,26 @@ OUT_DIR=.build
 OBJECTS=$(addprefix $(OUT_DIR)/,$(EXERCISES))
 LINT_OBJECTS := $(addprefix $(OUT_DIR)/,$(LINT_TARGETS))
 LINT_FIX_OBJECTS := $(addprefix $(OUT_DIR)/,$(LINT_FIX_TARGETS))
+MIGRATE_OBJECTS := $(addsuffix /.solution.json, $(EXERCISES))
 
-.PHONY: clean lint test-all
+.PHONY: clean lint test-all no-skip check-migrate 
 all: lint test-all
 lint: $(LINT_TARGETS)
 lint-fix: $(LINT_FIX_TARGETS)
 test-all: $(EXERCISES)
 clean:
 	rm -rf $(OUT_DIR)
+
+no-skip:
+	@ ! grep -rE '^\s+ skip' .
+
+check-migrate: $(MIGRATE_OBJECTS)
+
+$(MIGRATE_OBJECTS):
+	@ [ -f $@ ] || $(error "$(shell echo $@ | cut -d/ -f1) has not been migrated")
+
+dev:
+	@ echo $(MIGRATE_OBJECTS)
 
 $(LINT_TARGETS): %: $(OUT_DIR)/%
 $(LINT_FIX_TARGETS): %: $(OUT_DIR)/%

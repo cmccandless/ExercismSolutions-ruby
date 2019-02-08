@@ -29,7 +29,7 @@ class Board
     x, y, token, _key = tuple
     new_col = x + delta_col
     new_row = y + delta_row
-    new_key = ','.join(new_col, new_row, token)
+    new_key = [new_col, new_row, token].join(',')
     [new_col, new_row, token, new_key]
   end
 
@@ -43,7 +43,7 @@ class Board
     until stack.empty?
       t = stack.pop
       next if !do_check?(*t) || visited[t[-1]]
-      return token if winner?(*t)
+      return t[2] if winner?(*t)
 
       visited[t[-1]] = true
       update_stack(stack, t)

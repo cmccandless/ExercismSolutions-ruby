@@ -25,7 +25,7 @@ class Bst
   end
 
   def insert(value)
-    if value > @data
+    if value <= @data
       insert_left(value)
     else
       insert_right(value)
