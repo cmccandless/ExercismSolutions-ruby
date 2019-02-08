@@ -1,64 +1,120 @@
 class TwoBucket
-  def initialize(size1, size2, goal, goal_bucket)
-    @sizes = [size1, size2]
-    @goal = goal
-    @goal_bucket = goal_bucket
-    @goal_index = goal_bucket == "one" ? 0 : 1
-    @other_bucket = 0
-  end
+  attr_reader :moves
   attr_reader :goal_bucket
   attr_reader :other_bucket
-  def goal?(buckets)
-    if buckets.include?(@goal)
-      @goal_bucket = buckets.index(@goal) == 0 ? "one" : "two"
-      return true
-    end
-    false
+  def initialize(size1, size2, goal, start_bucket)
+    @sizes = [size1, size2]
+    @goal = goal
+    @start_bucket = start_bucket
+    @goal_bucket = nil
+    @other_bucket = nil
+    @moves = calculate
   end
-  def empty(buckets, i)
-    i == 0 ? [0, buckets[1]] : [buckets[0], 0]
+
+  def visit_state(to_visit, visited, state)
+    return if state.invalid? || visited.key?(state.key)
+
+    visited[state.key] = true
+    state.next_states(&to_visit.method(:push))
   end
-  def fill(buckets, i)
-    i == 0 ? [@sizes[0], buckets[1]] : [buckets[0], @sizes[1]]
+
+  def finalize(state)
+    goal_index = state.buckets.index(@goal)
+    @goal_bucket = goal_index.zero? ? 'one' : 'two'
+    @other_bucket = state.buckets[1 - goal_index]
+    state.moves
   end
-  def consolidate(buckets, i)
-    amount = [buckets[1 - i], @sizes[i] - buckets[i]].min
-    target = buckets[i] + amount
-    from = buckets[1 - i] - amount
-    i == 0 ? [target, from] : [from, target]
-  end
-  def buckets_s(buckets)
-    "#{buckets[0]},#{buckets[1]}"
-  end
-  def moves
-    invalid = [0, 0]
-    invalid[1 - @goal_index] = @sizes[1 - @goal_index]
-    invalid_s = buckets_s(invalid)
-    buckets = [0, 0]
-    buckets[@goal_index] = @sizes[@goal_index]
+
+  def calculate
     to_visit = []
     visited = {}
-    count = 1
-    until goal?(buckets)
-      key = buckets_s(buckets)
-      unless visited[key] || key == invalid_s
-        visited[key] = true
-        nc = count + 1
-        [0, 1].each { |i|
-          to_visit.push([empty(buckets, i), nc]) unless buckets[i] == 0
-          unless buckets[i] == @sizes[i]
-            to_visit.push([fill(buckets, i), nc])
-            to_visit.push([consolidate(buckets, i), nc])
-          end
-        }
-      end
-      raise ArgumentError.new("no more moves!") if to_visit.empty?
-      buckets, count = to_visit.shift
+    state = State.new(@sizes, @start_bucket)
+                 .fill(@start_bucket == 'one' ? 0 : 1)
+    until state.buckets.include?(@goal)
+      visit_state(to_visit, visited, state)
+      state = to_visit.shift
     end
-    @other_bucket = buckets[1 - @goal_index]
-    count
+    finalize(state)
   end
 end
-module BookKeeping
-  VERSION=4
+
+class State
+  attr_reader :moves
+  attr_reader :buckets
+  def initialize(sizes, start_bucket, buckets = [0, 0], moves = 0)
+    @sizes = sizes
+    @start_bucket = start_bucket
+    @buckets = buckets
+    @moves = moves
+  end
+
+  def goal_bucket
+    buckets.index(@goal).zero? ? 'one' : 'two'
+  end
+
+  def create_with(new_buckets)
+    State.new(
+      @sizes, @start_bucket,
+      new_buckets, @moves + 1
+    )
+  end
+
+  def empty(index)
+    create_with(index.zero? ? [0, buckets[1]] : [buckets[0], 0])
+  end
+
+  def fill(index)
+    create_with(
+      index.zero? ? [@sizes[0], buckets[1]] : [buckets[0], @sizes[1]]
+    )
+  end
+
+  def amount_movable(index)
+    [buckets[1 - index], @sizes[index] - buckets[index]].min
+  end
+
+  def consolidate(index)
+    amount = amount_movable(index)
+    target = buckets[index] + amount
+    src = buckets[1 - index] - amount
+    create_with(index.zero? ? [target, src] : [src, target])
+  end
+
+  def key
+    buckets.join(',')
+  end
+
+  def invalid?
+    non_start_index = @start_bucket == 'one' ? 1 : 0
+    invalid_buckets = [0, 0]
+    invalid_buckets[non_start_index] = @sizes[non_start_index]
+    buckets == invalid_buckets
+  end
+
+  def can_empty?(index)
+    !buckets[index].zero?
+  end
+
+  def can_fill?(index)
+    buckets[index] != @sizes[index]
+  end
+
+  def can_consolidate?(index)
+    can_fill?(index) && can_empty?(1 - index)
+  end
+
+  def internal_next_states
+    [0, 1].each_with_object([]) do |i, states|
+      states.push(empty(i)) if can_empty?(i)
+      states.push(fill(i)) if can_fill?(i)
+      states.push(consolidate(i)) if can_consolidate?(i)
+    end
+  end
+
+  def next_states(&block)
+    states = internal_next_states
+    return states unless block_given?
+
+    states.each(&block.method(:call))
+  end
 end

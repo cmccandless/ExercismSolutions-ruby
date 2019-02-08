@@ -6,9 +6,9 @@ that the sum of the coins' value would equal the correct amount of change.
 ## For example
 
 - An input of 15 with [1, 5, 10, 25, 100] should return one nickel (5)
-  and one dime (10) or [0, 1, 1, 0, 0]
+  and one dime (10) or [5, 10]
 - An input of 40 with [1, 5, 10, 25, 100] should return one nickel (5)
-  and one dime (10) and one quarter (25) or [0, 1, 1, 1, 0]
+  and one dime (10) and one quarter (25) or [5, 10, 25]
 
 ## Edge cases
 
@@ -19,7 +19,7 @@ that the sum of the coins' value would equal the correct amount of change.
 * * * *
 
 For installation and learning resources, refer to the
-[exercism help page](http://exercism.io/languages/ruby).
+[Ruby resources page](http://exercism.io/languages/ruby/resources).
 
 For running the tests provided, you will need the Minitest gem. Open a
 terminal window and run the following command to install minitest:
@@ -30,20 +30,18 @@ If you would like color output, you can `require 'minitest/pride'` in
 the test file, or note the alternative instruction, below, for running
 the test file.
 
-In order to run the test, you can run the test file from the exercise
-directory. For example, if the test suite is called
-`hello_world_test.rb`, you can run the following command:
+Run the tests from the exercise directory using the following command:
 
-    ruby hello_world_test.rb
+    ruby change_test.rb
 
 To include color from the command line:
 
-    ruby -r minitest/pride hello_world_test.rb
+    ruby -r minitest/pride change_test.rb
+
 
 ## Source
 
-Software Craftsmanship - Kata-logue [http://craftsmanship.sv.cmu.edu/exercises/coin-change-kata](http://craftsmanship.sv.cmu.edu/exercises/coin-change-kata)
+Software Craftsmanship - Coin Change Kata [https://web.archive.org/web/20130115115225/http://craftsmanship.sv.cmu.edu:80/exercises/coin-change-kata](https://web.archive.org/web/20130115115225/http://craftsmanship.sv.cmu.edu:80/exercises/coin-change-kata)
 
 ## Submitting Incomplete Solutions
 It's possible to submit an incomplete solution so you can see how others have completed the exercise.
-

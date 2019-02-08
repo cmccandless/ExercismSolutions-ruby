@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require_relative 'collatz_conjecture'
 
-# Common test data version: 1.1.1 25c4479
+# Common test data version: 1.2.1 d94e348
 class CollatzConjectureTest < Minitest::Test
   def test_zero_steps_for_one
     # skip
@@ -25,33 +25,15 @@ class CollatzConjectureTest < Minitest::Test
 
   def test_zero_is_an_error
     # skip
-    assert_raises(ArgumentError) { CollatzConjecture.steps(0) }
+    assert_raises(ArgumentError) do
+      CollatzConjecture.steps(0)
+    end
   end
 
   def test_negative_value_is_an_error
     # skip
-    assert_raises(ArgumentError) { CollatzConjecture.steps(-15) }
-  end
-
-  # Problems in exercism evolve over time, as we find better ways to ask
-  # questions.
-  # The version number refers to the version of the problem you solved,
-  # not your solution.
-  #
-  # Define a constant named VERSION inside of the top level BookKeeping
-  # module, which may be placed near the end of your file.
-  #
-  # In your file, it will look like this:
-  #
-  # module BookKeeping
-  #   VERSION = 1 # Where the version number matches the one in the test.
-  # end
-  #
-  # If you are curious, read more about constants on RubyDoc:
-  # http://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/constants.html
-
-  def test_bookkeeping
-    # skip
-    assert_equal 1, BookKeeping::VERSION
+    assert_raises(ArgumentError) do
+      CollatzConjecture.steps(-15)
+    end
   end
 end

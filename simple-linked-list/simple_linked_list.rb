@@ -6,38 +6,42 @@ class Element
   attr_reader :datum
   attr_accessor :next
   def ==(other)
-    nil? || other.nil? ? nil? && other.nil? : @datum == other.datum 
+    nil? || other.nil? ? nil? && other.nil? : @datum == other.datum
   end
 end
 class SimpleLinkedList
-  def initialize(datums=nil)
+  def initialize(datums = nil)
     @tail = nil
-    push(*datums.collect { |datum| Element.new(datum) }) if !datums.nil?
+    push(*datums.collect { |datum| Element.new(datum) }) unless datums.nil?
   end
+
   def push(*elements)
-    elements.each { |element|
-      element.next = @tail if !@tail.nil?
+    elements.each do |element|
+      element.next = @tail unless @tail.nil?
       @tail = element
-    }
+    end
     self
   end
+
   def pop
     element = @tail
-    if !@tail.nil?
-      @tail = @tail.next 
+    unless @tail.nil?
+      @tail = @tail.next
       element.next = nil
     end
     element
   end
+
   def to_a
     a = []
     node = @tail
-    while !node.nil?
+    until node.nil?
       a.push(node.datum)
       node = node.next
     end
     a
   end
+
   def reverse!
     a = to_a.collect { |datum| Element.new(datum) }
     @tail = nil

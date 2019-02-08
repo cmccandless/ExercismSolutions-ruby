@@ -1,16 +1,21 @@
 class Diamond
-  def self.make_diamond(c)
-    a = 'A'.ord
-    d = c.ord
-    w = d - a
-    lines = (a..d).collect { |i|
-      x = i - a
-      s = ' ' * (w - x) + i.chr + ' ' * x
-      s + s[0..-2].reverse + "\n"
-    }
-    (lines + lines[0..-2].reverse).join
+  def self.mirror(lst)
+    lst + lst[0..-2].reverse
   end
-end
-module Bookkeeping
-  VERSION = 1
+
+  def self.make_row(ord, width)
+    x = ord - 'A'.ord
+    s = ' ' * (width - x) + ord.chr + ' ' * x
+    mirror(s) + "\n"
+  end
+
+  def self.make_diamond(char)
+    a = 'A'.ord
+    d = char.ord
+    w = d - a
+    lines = (a..d).collect do |i|
+      make_row(i, w)
+    end
+    mirror(lines).join
+  end
 end

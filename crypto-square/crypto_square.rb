@@ -1,27 +1,29 @@
 class Crypto
   def initialize(text)
     @text = text
-    @npt = @text.downcase.chars.select { |c| c =~ /[\da-z]/ }.join
-    @size = Math.sqrt(@npt.length).ceil
-    @pts = (0..@npt.length / @size)
-      .collect { |i| @npt[i*@size..(i+1)*@size - 1] }
-      .select { |s| s != "" }
-    @cts = (0..@pts[0].length)
-      .collect { |i| @pts.collect { |s| s.chars.drop(i).take(1).join }.join }
   end
+
   def normalize_plaintext
-    @npt
+    @text.downcase.chars.select { |c| c =~ /[\da-z]/ }.join
   end
+
   def size
-    @size
+    Math.sqrt(normalize_plaintext.length).ceil
   end
+
   def plaintext_segments
-    @pts
+    return [] if size.zero?
+
+    normalize_plaintext
+      .chars
+      .each_slice(size)
+      .collect { |seg| seg.join('') }
   end
+
   def ciphertext
-    @cts.join.strip
-  end
-  def normalize_ciphertext
-    @cts.join(" ").strip
+    pts = plaintext_segments
+    Array.new(size) { |i|
+      pts.collect { |seg| seg.length <= i ? ' ' : seg[i] }.join
+    }.join(' ')
   end
 end

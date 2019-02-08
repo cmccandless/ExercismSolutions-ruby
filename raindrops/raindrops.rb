@@ -1,21 +1,11 @@
 class Raindrops
-	def self.convert(num)
-		@result = ''
-		if num % 3 == 0
-			@result += 'Pling'
-		end
-		if num % 5 == 0
-			@result += 'Plang'
-		end
-		if num % 7 == 0
-			@result += 'Plong'
-		end
-		if @result == ''
-			return num.to_s
-		end
-		return @result
-	end
-end
-module BookKeeping
-  VERSION = 3 # Where the version number matches the one in the test.
+  def self.convert(num)
+    @result = ''
+    @result += 'Pling' if (num % 3).zero?
+    @result += 'Plang' if (num % 5).zero?
+    @result += 'Plong' if (num % 7).zero?
+    return num.to_s if @result == ''
+
+    @result
+  end
 end

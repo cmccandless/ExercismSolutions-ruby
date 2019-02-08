@@ -4,23 +4,30 @@ class Meetup
     @month = month
     @year = year
   end
-  def day(dayOfWeek, schedule)
-    nToDay = [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday]
-    nth = [:first, :second, :third, :fourth]
-    d = Date.new(@year, @month, 1)
-    n = case schedule
+
+  def n_to_day
+    %i[sunday monday tuesday wednesday thursday friday saturday]
+  end
+
+  def ordinal
+    %i[first second third fourth]
+  end
+
+  def apply_schedule_week(day, schedule)
+    case schedule
     when :teenth
-      d += 12
-      0
+      day + 12
     when :last
-      d = (d >> 1) - 7
-      0
+      (day >> 1) - 7
     else
-      nth.index(schedule)
+      day + 7 * ordinal.index(schedule)
     end
-    while nToDay[d.wday] != dayOfWeek
-      d += 1
-    end
-    d += 7 * n
+  end
+
+  def day(day_of_week, schedule)
+    d = Date.new(@year, @month, 1)
+    d = apply_schedule_week(d, schedule)
+    d += 1 while n_to_day[d.wday] != day_of_week
+    d
   end
 end

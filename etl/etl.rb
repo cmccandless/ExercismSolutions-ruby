@@ -1,6 +1,6 @@
 class ETL
   def self.transform(input)
-    input.to_a.collect { |p| p[1].collect { |v| [v.downcase, p[0]] } }.flatten(1).to_h
+    input.to_a.flat_map { |p| p[1].collect { |v| [v.downcase, p[0]] } }.to_h
   end
 end
 module BookKeeping

@@ -2,18 +2,19 @@ class SumOfMultiples
   def initialize(*factors)
     @factors = factors
   end
-  def to(max)
-    @factors.collect {|factor| 
-              (1..max / factor).collect { |multiplicand| 
-                multiplicand * factor 
-              } 
-            }
-            .flatten
-            .uniq
-            .select { |multiple| multiple < max }
-            .inject(0, :+)
+
+  def generate_multiples(factor_max)
+    factor, max = *factor_max
+    return [0] if factor.zero?
+
+    (1..max / factor).collect(&factor.method(:*))
   end
-end
-module BookKeeping
-  VERSION = 1 # Where the version number matches the one in the test.
+
+  def to(max)
+    @factors.zip(Array.new(@factors.length, max))
+            .flat_map(&method(:generate_multiples))
+            .uniq
+            .reject(&max.method(:<=))
+            .reduce(0, :+)
+  end
 end

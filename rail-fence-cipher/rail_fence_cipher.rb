@@ -1,33 +1,54 @@
-class RailFenceCipher
-  VERSION = 1 # Where the version number matches the one in the test.
-  
-  def self.encode(str, nRails)
-    return str if nRails < 2
-    rails = Array.new(nRails).fill("")
-    cap = 2 * nRails - 2
-    chars = str.chars
-    (0..str.length - 1).each { |i|
-      index = (i % cap)
-      rails[index < nRails ? index : 2 * nRails - index - 2] += chars.shift
-    }
-    rails.join
+class Array
+  def extract_modulus(indices, mod, offset = 0)
+    drop(offset).each_with_index.each_with_object([]) do |pair, result|
+      value, index = *pair
+      result.push(value) if indices.include?(index % mod)
+    end
   end
-  
-  def self.decode(str, nRails)
-    return str if nRails < 2
-    rails = Array.new(nRails).fill(0)
-    cap = 2 * nRails - 2
-    chars = str.chars
-    (0..str.length - 1).each { |i|
-      index = (i % cap)
-      rails[index < nRails ? index : 2 * nRails - index - 2] += 1
-    }
-    rails = rails.collect { |n| chars.shift(n) }
-    decoded = ""
-    (0..str.length - 1).each { |i|
-      index = (i % cap)
-      decoded += rails[index < nRails ? index : 2 * nRails - index - 2].shift
-    }
+end
+
+class String
+  def extract_modulus(indices, mod, offset = 0)
+    chars.extract_modulus(indices, mod, offset)
+  end
+end
+
+class RailFenceCipher
+  def self.get_rails(str, n_rails)
+    mod = n_rails * 2 - 2
+    Array.new(n_rails) do |rail_index|
+      indices = [rail_index, 2 * (n_rails - 1) - rail_index]
+                .uniq
+                .reject { |i| i >= mod }
+      str.extract_modulus(indices, mod).join
+    end
+  end
+
+  def self.encode(str, n_rails)
+    return str if n_rails < 2
+
+    get_rails(str, n_rails).join
+  end
+
+  def self.distribute_rails(rails)
+    rails += rails[1..-2].reverse if rails.length > 2
+
+    decoded = ''
+    until rails.empty?
+      rail = rails.shift
+      decoded += rail.shift unless rail.empty?
+      rails.push(rail) unless rail.empty?
+    end
     decoded
+  end
+
+  def self.decode(str, n_rails)
+    return str if (n_rails < 2) || str.empty?
+
+    chars = str.chars
+    rails = get_rails(str, n_rails)
+            .map(&:length)
+            .map(&chars.method(:shift))
+    distribute_rails(rails)
   end
 end

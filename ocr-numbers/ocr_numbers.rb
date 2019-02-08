@@ -1,37 +1,46 @@
 class OcrNumbers
-  def self.convertDigit(n)
-    digits = [0xAF,0x09, 0x9E, 0x9B, 0x39, 0xB3, 0xB7, 0x89, 0xBF, 0xBB]
-    digits.include?(n) ? digits.index(n).to_s : "?"
+  def self.convert_digit(digit)
+    digits = [0xAF, 0x09, 0x9E, 0x9B, 0x39, 0xB3, 0xB7, 0x89, 0xBF, 0xBB]
+    digits.include?(digit) ? digits.index(digit).to_s : '?'
   end
-  def self.convertNumber(s)
-    convertDigit(s.chars
-                  .zip("*_*|_||_|".chars)
-                  .collect { |ch,seg| ch == seg ? 1 : 0 }
+
+  def self.convert_number(str)
+    convert_digit(str.chars
+                  .zip('*_*|_||_|'.chars)
+                  .collect { |ch, seg| ch == seg ? 1 : 0 }
                   .join
                   .to_i(2))
   end
-  def self.getNumbers(lines)
-    ps, qs = lines.collect { |line| 
+
+  def self.get_numbers(lines)
+    ps, qs = lines.collect { |line|
       return [] if line.empty?
+
       [line[0..2], line[3..-1]]
     }
-    .transpose
-    getNumbers(qs).unshift(ps[0,3].join)
+                  .transpose
+    get_numbers(qs).unshift(ps[0, 3].join)
   end
+
+  def self.validate_line_count(input)
+    raise ArgumentError unless input.count("\n") % 4 == 3
+  end
+
+  def self.validate_line_width(line)
+    raise ArgumentError unless (line.length % 3).zero?
+  end
+
   def self.convert(input)
-    numbers = []
-    lines = input.split("\n")
-    raise ArgumentError if (input.count("\n") + 1) % 4 != 0
-    lines.each_slice(4) { |lines| 
-           raise ArgumentError if lines.any? { |line| line.length % 3 != 0 }
-           numbers.push(getNumbers(lines).collect { |number| 
-                                           convertNumber(number) 
-                                         }
-                                         .join)
-         }
-    numbers.join(",")
+    validate_line_count(input)
+
+    input.split("\n")
+         .each_slice(4)
+         .each_with_object([]) { |line_slice, numbers|
+      line_slice.each(&method(:validate_line_width))
+
+      numbers.push(
+        get_numbers(line_slice).collect(&method(:convert_number)).join
+      )
+    }.join(',')
   end
-end
-module BookKeeping
-  VERSION = 1 # Where the version number matches the one in the test.
 end

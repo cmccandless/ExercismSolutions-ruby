@@ -1,25 +1,40 @@
 class BinarySearch
+  attr_accessor :list
   def initialize(list)
     @list = list
     raise ArgumentError if list != list.sort
   end
-  attr_accessor :list
+
   def middle
-    list.size / 2
+    @list.size / 2
   end
-  def search_for(data)
-    p, r, q = [0, middle, list.size]
+
+  def midpoint(left, right)
+    (right - left) / 2 + left
+  end
+
+  def search_start
+    [0, middle, list.size]
+  end
+
+  def do_search
+    p, r, q = search_start
     while p < r
-      case list[r] <=> data
-      when 1
+      return r if list[r] == data
+
+      if list[r] < data
         q = r
-      when 0
-        return r
-      when -1
+      else
         p = r
       end
-      r = (q - p) / 2 + p
+      r = midpoint(p, q)
     end
-    raise RuntimeError
+  end
+
+  def search_for(_data)
+    r = do_search
+    raise RuntimeError if r.nil?
+
+    r
   end
 end

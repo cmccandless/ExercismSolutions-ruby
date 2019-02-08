@@ -1,34 +1,43 @@
 class Bst
+  attr_reader :data
+  attr_reader :left
+  attr_reader :right
   def initialize(data)
     @data = data
     @left = nil
     @right = nil
   end
-  attr_reader :data
-  attr_reader :left
-  attr_reader :right
-  def insert(x)
-    if x > @data
-      if @right
-        @right.insert(x)
-      else
-        @right = Bst.new(x)
-      end
+
+  def insert_left(value)
+    if @left
+      @left.insert(value)
     else
-      if @left
-        @left.insert(x)
-      else
-        @left = Bst.new(x)
-      end
+      @left = Bst.new(value)
     end
   end
+
+  def insert_right(value)
+    if @right
+      @right.insert(value)
+    else
+      @right = Bst.new(value)
+    end
+  end
+
+  def insert(value)
+    if value > @data
+      insert_left(value)
+    else
+      insert_right(value)
+    end
+  end
+
   def each(&block)
     return enum_for(:each) unless block_given?
+
     @left.each(&block) if @left
-    block.call(@data)
+
+    yield(@data)
     @right.each(&block) if @right
   end
-end
-module BookKeeping
-  VERSION = 1 # Where the version number matches the one in the test.
 end

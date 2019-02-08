@@ -1,31 +1,27 @@
 InvalidCodonError = Exception
 class Translation
+  @codons = {
+    /^AUG$/ => 'Methionine',
+    /^UGG$/ => 'Tryptophan',
+    /^UU[CU]$/ => 'Phenylalanine',
+    /^UU[AG]$/ => 'Leucine',
+    /^UA[CU]$/ => 'Tyrosine',
+    /^UG[CU]$/ => 'Cysteine',
+    /^UC[ACGU]$/ => 'Serine',
+    /^U(A[AG]|GA)$/ => 'STOP'
+  }
   def self.of_codon(codon)
-    case codon
-    when "AUG"
-      "Methionine"
-    when /UU[CU]/
-      "Phenylalanine"
-    when /UU[AG]/
-      "Leucine"
-    when /UC[ACGU]/
-      "Serine"
-    when /UA[CU]/
-      "Tyrosine"
-    when /UG[CU]/
-      "Cysteine"
-    when "UGG"
-      "Tryptophan"
-    when /U(A[AG]|GA)/
-      "STOP"
-    else
-      raise InvalidCodonError
+    @codons.each do |pattern, name|
+      return name if codon =~ pattern
     end
+    raise InvalidCodonError
   end
+
   def self.of_rna(rna)
     rna.chars
        .each_slice(3)
-       .collect { |codon| of_codon(codon.join) }
-       .take_while { |codon| codon != "STOP" }
+       .map(&:join)
+       .map(&method(:of_codon))
+       .take_while { |codon| codon != 'STOP' }
   end
 end

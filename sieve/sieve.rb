@@ -1,21 +1,21 @@
 class Sieve
-	def initialize(n)
-		@num = n
-	end
-	def primes
-		np = (0..@num).select { |x| false }
-		np[0] = true
-		np[1] = true
-		for i in (2..@num - 1) do
-			x = i + i
-			until x > @num
-				np[x] = true
-				x += i
-			end
-		end
-		return (2..@num).select { |x| !np[x] }
-	end
-end
-module BookKeeping
-  VERSION = 1 # Where the version number matches the one in the test.
+  def initialize(num)
+    @num = num
+  end
+
+  def set_not_prime(base, not_prime)
+    x = base + base
+    until x > @num
+      not_prime[x] = true
+      x += base
+    end
+  end
+
+  def primes
+    np = (0..@num).select { |_x| false }
+    np[0] = true
+    np[1] = true
+    (2..@num).each_with_object(np, &method(:set_not_prime))
+    (2..@num).reject { |x| np[x] }
+  end
 end

@@ -1,9 +1,9 @@
 class Transpose
   def self.transpose(str)
     str.split("\n")
-       .collect { |line| 
+       .collect { |line|
          line.ljust(str.size)
-             .chars 
+             .chars
        }.transpose
        .collect(&:join)
        .join("\n")

@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require_relative 'custom_set'
 
-# Common test data version: 1.0.1 4527635
+# Common test data version: 1.3.0 1ef368e
 class CustomSetTest < Minitest::Test
   def test_sets_with_no_elements_are_empty
     # skip
@@ -148,6 +148,13 @@ class CustomSetTest < Minitest::Test
     refute_equal set1, set2
   end
 
+  def test_set_is_not_equal_to_larger_set_with_same_elements
+    # skip
+    set1 = CustomSet.new [1, 2, 3]
+    set2 = CustomSet.new [1, 2, 3, 4]
+    refute_equal set1, set2
+  end
+
   def test_add_to_empty_set
     # skip
     set = CustomSet.new []
@@ -271,27 +278,5 @@ class CustomSetTest < Minitest::Test
     set2 = CustomSet.new [2, 3]
     expected = CustomSet.new [3, 2, 1]
     assert_equal expected, set1.union(set2)
-  end
-
-  # Problems in exercism evolve over time, as we find better ways to ask
-  # questions.
-  # The version number refers to the version of the problem you solved,
-  # not your solution.
-  #
-  # Define a constant named VERSION inside of the top level BookKeeping
-  # module, which may be placed near the end of your file.
-  #
-  # In your file, it will look like this:
-  #
-  # module BookKeeping
-  #   VERSION = 1 # Where the version number matches the one in the test.
-  # end
-  #
-  # If you are curious, read more about constants on RubyDoc:
-  # http://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/constants.html
-
-  def test_bookkeeping
-    # skip
-    assert_equal 1, BookKeeping::VERSION
   end
 end

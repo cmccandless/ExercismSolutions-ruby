@@ -1,10 +1,13 @@
 class Hamming
-  def self.compute(a, b)
-    raise(ArgumentError) if a.length != b.length
-    a.length == 0 ? 0 : a.chars.zip(b.chars).collect{ |x| (x[0]<=>x[1]).abs }.inject(:+)
+  def self.compare_pair_abs(pair)
+    (pair[0] <=> pair[1]).abs
   end
-end
 
-module BookKeeping
-  VERSION = 3 # Where the version number matches the one in the test.
+  def self.compute(left, right)
+    raise(ArgumentError) if left.length != right.length
+
+    return 0 if left.empty?
+
+    left.chars.zip(right.chars).collect(&method(:compare_pair_abs)).reduce(:+)
+  end
 end

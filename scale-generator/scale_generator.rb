@@ -1,29 +1,33 @@
 class Scale
   def self.keys(tonic)
-    tonic =~ /^([A-EGabe]|[Fcdfg]#)$/ ?
-    %w(A A# B C C# D D# E F F# G G#) :
-    %w(A Bb B C Db D Eb E F Gb G Ab)
+    return %w[A A# B C C# D D# E F F# G G#] if
+      tonic =~ /^([A-EGabe]|[Fcdfg]#)$/
+
+    %w[A Bb B C Db D Eb E F Gb G Ab]
   end
+
   def self.intervals(name)
     case name
     when :chromatic
-     "mmmmmmmmmmmm"
+      'mmmmmmmmmmmm'
     when :major
-     "MMmMMMmM"
+      'MMmMMMmM'
     when :minor
-     "MmMMMmMM"
+      'MmMMMmMM'
     end
   end
+
   def self.pitches(tonic, intervals)
     keys = Scale.keys(tonic)
-    intervals.tr("_mMA","0123")
+    intervals.tr('_mMA', '0123')
              .chars
              .collect(&:to_i)
-             .reduce([tonic.capitalize]) { |pitches, step|
+             .reduce([tonic.capitalize]) do |pitches, step|
                pitches.push(keys[(keys.index(pitches[-1]) + step) % keys.size])
-             }
+             end
   end
-  def initialize(tonic, name, intervals=nil)
+
+  def initialize(tonic, name, intervals = nil)
     @name = "#{tonic.capitalize} #{name}"
     @pitches = Scale.pitches(tonic, (intervals || Scale.intervals(name))[0..-2])
   end
@@ -31,5 +35,5 @@ class Scale
   attr_reader :pitches
 end
 module BookKeeping
-  VERSION=1
+  VERSION = 1
 end

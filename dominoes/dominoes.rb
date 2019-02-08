@@ -1,28 +1,52 @@
 class Dominoes
-  def self.chain(dominoes)
-    return [] if dominoes.empty?
-    dominoes.permutation { |perm|
-      chain = perm[1..-1].reduce([perm[0]]) { |result, domino|
-        case
-        when result.nil?
-          nil
-        when result.size == 1 && result[0][0] == domino[0]
-          [result[0].reverse, domino]
-        when result.size == 1 && result[0][0] == domino[1]
-          [result[0].reverse, domino.reverse]
-        when result[-1][1] == domino[0]
-          result + [domino]
-        when result[-1][1] == domino[1]
-          result + [domino.reverse]
-        else
-          nil
-        end
-      }
-      return chain unless chain.nil? || chain[0][0] != chain[-1][1]
-    }
-    nil
+  def self.valid_chain?(chain)
+    chain && chain[0][0] == chain[-1][1]
   end
-end
-module BookKeeping
-  VERSION = 1
+
+  def self.merge_left_left(chain, domino)
+    return unless chain.size == 1 && chain[0][0] == domino[0]
+
+    chain[0].reverse!
+    chain.push(domino)
+  end
+
+  def self.merge_left_right(chain, domino)
+    return unless chain.size == 1 && chain[0][0] == domino[1]
+
+    chain[0].reverse!
+    chain.push(domino.reverse)
+  end
+
+  def self.merge_right_left(chain, domino)
+    return unless chain[-1][1] == domino[0]
+
+    chain.push(domino)
+  end
+
+  def self.merge_right_right(chain, domino)
+    return unless chain[-1][1] == domino[1]
+
+    chain.push(domino.reverse)
+  end
+
+  def self.step(chain, domino)
+    return nil if chain.nil?
+    return chain if merge_left_left(chain, domino)
+    return chain if merge_left_right(chain, domino)
+    return chain if merge_right_left(chain, domino)
+    return chain if merge_right_right(chain, domino)
+  end
+
+  def self.try_chain(permutation)
+    permutation.reduce([permutation.shift], &method(:step))
+  end
+
+  def self.chain?(dominoes)
+    return [] if dominoes.empty?
+
+    dominoes.permutation
+            .lazy
+            .map(&method(:try_chain))
+            .find(&method(:valid_chain?))
+  end
 end

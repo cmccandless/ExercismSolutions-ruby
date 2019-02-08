@@ -3,17 +3,16 @@ class Series
     @series = series
     raise ArgumentError if series =~ /[^\d]/
   end
+
   def largest_product(size)
-    return 1 if size == 0
+    return 1 if size.zero?
     raise ArgumentError if size > @series.size
+
     @series.chars
            .each_cons(size)
-           .collect { |slice| 
+           .collect { |slice|
              slice.collect(&:to_i)
-                  .reduce(:*) 
+                  .reduce(:*)
            }.max
   end
-end
-module BookKeeping
-  VERSION=3
 end

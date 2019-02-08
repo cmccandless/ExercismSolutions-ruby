@@ -1,8 +1,8 @@
 class String
   def histogram
-    "ATCG".chars
+    'ATCG'.chars
           .collect { |ch|
-            [ch, self.count(ch)]
+            [ch, count(ch)]
           }
           .to_h
   end
@@ -10,6 +10,7 @@ end
 class Nucleotide
   def self.from_dna(input)
     raise ArgumentError if input =~ /[^ATCG]/
+
     input
   end
 end

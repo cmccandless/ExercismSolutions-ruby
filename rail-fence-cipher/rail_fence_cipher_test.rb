@@ -1,7 +1,6 @@
 require 'minitest/autorun'
 require_relative 'rail_fence_cipher'
 
-# rubocop:enable all
 class RailFenceCipherTest < Minitest::Test
   def test_encode_with_empty_string
     assert_equal '', RailFenceCipher.encode('', 4)
@@ -57,10 +56,5 @@ class RailFenceCipherTest < Minitest::Test
     # skip
     assert_equal 'THEDEVILISINTHEDETAILS',
                  RailFenceCipher.decode('TEITELHDVLSNHDTISEIIEA', 3)
-  end
-
-  def test_bookkeeping
-    # skip
-    assert_equal 1, RailFenceCipher::VERSION
   end
 end

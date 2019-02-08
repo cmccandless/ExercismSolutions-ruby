@@ -1,6 +1,6 @@
 class Complement
   def self.of_dna(codons)
-    codons =~ /[^CGTA]/ ? "" : codons.tr("CGTA", "GCAU")
+    codons =~ /[^CGTA]/ ? '' : codons.tr('CGTA', 'GCAU')
   end
 end
 

@@ -1,10 +1,23 @@
 class PhoneNumber
-  def self.clean(number)
-    number = number.chars.select { |ch| ch =~ /\d/ }.join
-    number = number[1..-1] if number.length == 11 && number[0] == '1'
-    number.length == 10 && number[0] != '1' && number[3] =~ /[^01]/ ? number : nil
+  def self.digit?(char)
+    char =~ /\d/
   end
-end
-module BookKeeping
-  VERSION = 2 # Where the version number matches the one in the test.
+
+  def self.valid_area_code?(number)
+    number[0] =~ /[^01]/
+  end
+
+  def self.valid_exchange_code?(number)
+    number[3] =~ /[^01]/
+  end
+
+  def self.clean(number)
+    number = number.chars.select(&method(:digit?)).join
+    number = number[1..-1] if number.length == 11 && number[0] == '1'
+    return nil unless number.length == 10
+    return nil unless valid_area_code?(number)
+    return nil unless valid_exchange_code?(number)
+
+    number
+  end
 end

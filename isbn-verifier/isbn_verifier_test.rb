@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require_relative 'isbn_verifier'
 
-# Common test data version: 2.0.0 3251fa6
+# Common test data version: 2.7.0 3134243
 class IsbnVerifierTest < Minitest::Test
   def test_valid_isbn_number
     # skip
@@ -29,7 +29,7 @@ class IsbnVerifierTest < Minitest::Test
 
   def test_invalid_character_in_isbn
     # skip
-    string = "3-598-2K507-0"
+    string = "3-598-P1581-X"
     refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
   end
 
@@ -63,15 +63,15 @@ class IsbnVerifierTest < Minitest::Test
     refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
   end
 
-  def test_isbn_without_check_digit
+  def test_too_short_isbn
     # skip
-    string = "3-598-21507"
+    string = "00"
     refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
   end
 
-  def test_too_long_isbn
+  def test_isbn_without_check_digit
     # skip
-    string = "3-598-21507-XX"
+    string = "3-598-21507"
     refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
   end
 
@@ -81,25 +81,27 @@ class IsbnVerifierTest < Minitest::Test
     refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
   end
 
-  # Problems in exercism evolve over time, as we find better ways to ask
-  # questions.
-  # The version number refers to the version of the problem you solved,
-  # not your solution.
-  #
-  # Define a constant named VERSION inside of the top level BookKeeping
-  # module, which may be placed near the end of your file.
-  #
-  # In your file, it will look like this:
-  #
-  # module BookKeeping
-  #   VERSION = 1 # Where the version number matches the one in the test.
-  # end
-  #
-  # If you are curious, read more about constants on RubyDoc:
-  # http://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/constants.html
-
-  def test_bookkeeping
+  def test_empty_isbn
     # skip
-    assert_equal 1, BookKeeping::VERSION
+    string = ""
+    refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
+  end
+
+  def test_input_is_9_characters
+    # skip
+    string = "134456729"
+    refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
+  end
+
+  def test_invalid_characters_are_not_ignored
+    # skip
+    string = "3132P34035"
+    refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
+  end
+
+  def test_input_is_too_long_but_contains_a_valid_isbn
+    # skip
+    string = "98245726788"
+    refute IsbnVerifier.valid?(string), "Expected false, '#{string}' is not a valid isbn"
   end
 end

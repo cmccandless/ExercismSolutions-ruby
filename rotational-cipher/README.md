@@ -13,7 +13,7 @@ The most commonly used rotational cipher is `ROT13`.
 
 A `ROT13` on the Latin alphabet would be as follows:
 
-```plain
+```text
 Plain:  abcdefghijklmnopqrstuvwxyz
 Cipher: nopqrstuvwxyzabcdefghijklm
 ```
@@ -23,6 +23,7 @@ It is stronger than the Atbash cipher because it has 27 possible keys, and 25 us
 Ciphertext is written out in the same formatting as the input including spaces and punctuation.
 
 ## Examples
+
 - ROT5  `omg` gives `trl`
 - ROT0  `c` gives `c`
 - ROT26 `Cool` gives `Cool`
@@ -32,7 +33,7 @@ Ciphertext is written out in the same formatting as the input including spaces a
 * * * *
 
 For installation and learning resources, refer to the
-[exercism help page](http://exercism.io/languages/ruby).
+[Ruby resources page](http://exercism.io/languages/ruby/resources).
 
 For running the tests provided, you will need the Minitest gem. Open a
 terminal window and run the following command to install minitest:
@@ -43,15 +44,14 @@ If you would like color output, you can `require 'minitest/pride'` in
 the test file, or note the alternative instruction, below, for running
 the test file.
 
-In order to run the test, you can run the test file from the exercise
-directory. For example, if the test suite is called
-`hello_world_test.rb`, you can run the following command:
+Run the tests from the exercise directory using the following command:
 
-    ruby hello_world_test.rb
+    ruby rotational_cipher_test.rb
 
 To include color from the command line:
 
-    ruby -r minitest/pride hello_world_test.rb
+    ruby -r minitest/pride rotational_cipher_test.rb
+
 
 ## Source
 
@@ -59,4 +59,3 @@ Wikipedia [https://en.wikipedia.org/wiki/Caesar_cipher](https://en.wikipedia.org
 
 ## Submitting Incomplete Solutions
 It's possible to submit an incomplete solution so you can see how others have completed the exercise.
-
