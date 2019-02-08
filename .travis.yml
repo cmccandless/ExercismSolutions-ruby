@@ -1,11 +1,14 @@
 language: ruby
 rvm:
   - 2.2
+  - 2.3
+  - 2.4
   - jruby
   - truffleruby
   - 2.0.0-p247
 
 before_script:
+  - gem install rubocop
   - make lint
 
 script:
