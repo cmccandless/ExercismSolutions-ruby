@@ -45,7 +45,7 @@ $(OBJECTS): $$(GET_DEP) | $(OUT_DIR)
 	@ touch $@
 
 GET_DEP_LINT = $(filter $(patsubst $(OUT_DIR)/lint-%,%,$@)%,$(SOURCE_FILES))
-$(LINT_OBJECTS): $$(GET_DEP) | $(OUT_DIR)
+$(LINT_OBJECTS): $$(GET_DEP_LINT) | $(OUT_DIR)
 	$(eval EXERCISE := $(patsubst $(OUT_DIR)/lint-%,%,$@))
 	@ echo "linting $(EXERCISE)..."
 	@ ls $(EXERCISE)/*.rb | xargs -n1 | grep -v _test | xargs rubocop
