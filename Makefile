@@ -10,10 +10,11 @@ LINT_FIX_OBJECTS := $(addprefix $(OUT_DIR)/,$(LINT_FIX_TARGETS))
 MIGRATE_OBJECTS := $(addsuffix /.solution.json, $(EXERCISES))
 
 .PHONY: clean lint test-all no-skip check-migrate 
-all: lint test-all
+all: lint test
+pre-push pre-commit: no-skip check-migrate lint test
 lint: $(LINT_TARGETS)
 lint-fix: $(LINT_FIX_TARGETS)
-test-all: $(EXERCISES)
+test: $(EXERCISES)
 clean:
 	rm -rf $(OUT_DIR)
 

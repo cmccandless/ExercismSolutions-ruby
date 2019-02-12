@@ -6,7 +6,7 @@ install:
   - bundle install --quiet
 
 before_script:
-  - make check-migrate no-skip lint
+  - make check-migrate lint
 
 script:
-  - make test-all
+  - make no-skip test
