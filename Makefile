@@ -7,7 +7,7 @@ OUT_DIR=.build
 OBJECTS=$(addprefix $(OUT_DIR)/,$(EXERCISES))
 LINT_OBJECTS := $(addprefix $(OUT_DIR)/,$(LINT_TARGETS))
 LINT_FIX_OBJECTS := $(addprefix $(OUT_DIR)/,$(LINT_FIX_TARGETS))
-MIGRATE_OBJECTS := $(addsuffix /.solution.json, $(EXERCISES))
+MIGRATE_OBJECTS := $(addsuffix /.exercism/metadata.json, $(EXERCISES))
 
 .PHONY: clean lint test-all no-skip check-migrate 
 all: lint test

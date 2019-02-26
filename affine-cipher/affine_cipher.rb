@@ -1,33 +1,36 @@
 # important ascii codes: a=97
+NON_ALPHANUMERIC = '^a-z0-9'.freeze
+ORD_A = 'a'.ord
+ALPHA_SZ = 26
+
 class Affine
   def initialize(key_a, key_b)
-    raise ArgumentError unless key_a.gcd(26) == 1
+    raise ArgumentError unless key_a.gcd(ALPHA_SZ) == 1
 
-    @key_a = key_a
-    @mmi_a = (1..26).find { |n| (key_a * n) % 26 == 1 }
-    @key_b = key_b
+    @char_map = self.class.generate_char_map(key_a, key_b)
+  end
+
+  def self.generate_char_map(key_a, key_b)
+    ('a'..'z').zip((0..ALPHA_SZ - 1).map { |char|
+      (((key_a * char + key_b) % ALPHA_SZ) + ORD_A).chr
+    }).to_h
+  end
+
+  def clean(text)
+    text.downcase.tr(NON_ALPHANUMERIC, '')
+  end
+
+  def transcode(text, mapping)
+    clean(text).tr(mapping.keys.join, mapping.values.join)
   end
 
   def encode(plaintext)
-    plaintext.downcase
-             .tr('^a-z0-9', '')
-             .tr(
-               'a-z',
-               (0..25).collect { |x|
-                 (((@key_a * x + @key_b) % 26) + 97).chr
-               }.join
-             )
-             .scan(/.{1,5}/)
-             .join(' ')
+    transcode(plaintext, @char_map)
+      .scan(/.{1,5}/)
+      .join(' ')
   end
 
   def decode(ciphertext)
-    ciphertext.tr('^a-z0-9', '')
-              .tr(
-                'a-z',
-                (0..25).collect { |y|
-                  ((@mmi_a * (y - @key_b + 26) % 26) + 97).chr
-                }.join
-              )
+    transcode(ciphertext, @char_map.invert.to_h)
   end
 end
